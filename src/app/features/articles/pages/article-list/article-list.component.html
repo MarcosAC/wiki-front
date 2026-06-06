@@ -1,0 +1,58 @@
+<div class="container">
+    <header class="page-header">
+        <h1>Artigos & Soluções Técnicas</h1>
+        <button mat-raised-button color="primary" routerLink="/articles/new">
+            <mat-icon>add</mat-icon> Novo Artigo
+        </button>
+    </header>
+
+    <div class="filter-bar">
+        <mat-form-field appearance="outline" class="search-input">
+            <mat-label>Pesquisar por título ou conteúdo...</mat-label>
+            <input matInput (input)="onSearch($event)" placeholder="Ex: Erro Postgres...">
+            <mat-icon>search</mat-icon>
+        </mat-form-field>
+    </div>
+
+    <div class="articles-grid">
+        @for (article of articles(); track article.id) {
+            <mat-card class="article-card">
+                <mat-card-header>
+                    <div mat-card-avatar class="category-avatar">
+                        {{ article.category.substring(0, 2).toUpperCase() }}
+                    </div>
+                    <mat-card-title>{{ article.title }}</mat-card-title>
+                    <mat-card-subtitle>
+                        Por <strong>{{ article.authorName }}</strong> em {{ article.createdAt | date: 'dd/MM/yyyy'}}
+                    </mat-card-subtitle>
+                </mat-card-header>
+                
+                <mat-card-content>
+                    <p class="content-preview">{{ article.content }}</p>
+
+                    <mat-chip-set class="tags-set">
+                        @for (tag of article.tags.split(','); track tag) {
+                            @if (tag.trim()) {
+                                <mat-chip>{{ tag.trim() }}</mat-chip>
+                            }
+                        }
+                    </mat-chip-set>
+                </mat-card-content>
+
+                <mat-card-actions align="end">
+                    <button mat-icon-button color="accent" [routerLink]="['/articles/edit', article.id]">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteArticle(article.id)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </mat-card-actions>
+            </mat-card>
+        } @empty {
+            <div class="empty-state">
+                <mat-icon class="empty-icon">menu_book</mat-icon>
+                <p>Nenhum artigo encontrado para a pesquisa.</p>
+            </div>
+        }
+    </div>
+</div>

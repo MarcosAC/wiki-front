@@ -1,0 +1,19 @@
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  background-color: #3f51b5; /* Cor primária Indigo */
+  color: white;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}

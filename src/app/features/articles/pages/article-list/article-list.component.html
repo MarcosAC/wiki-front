@@ -4,53 +4,53 @@
 </div>
 
 @if (loading) {
-<div class="loading-box">
-    <p>Carregando artigos do banco de dados...</p>
-</div>
+    <div class="loading-box">
+        <p>Carregando artigos do banco de dados...</p>
+    </div>
 } @else {
-@if (articles.length === 0) {
-<div class="empty-state">
-    <mat-icon class="empty-icon">menu_book</mat-icon>
-    <h3>Nenhum artigo encontrado</h3>
-    <p>Parece que o seu banco de dados está vazio. Comece criando um novo artigo técnico!</p>
-    <button mat-raised-button color="primary" routerLink="/articles/new">
-        <mat-icon>add</mat-icon> Criar Primeiro Artigo
-    </button>
-</div>
-} @else {
-<div class="articles-grid">
-    @for (article of articles; track article.id) {
-    <mat-card class="article-card mat-elevation-z2">
-        <mat-card-header>
-            <mat-card-title class="article-title">{{ article.title }}</mat-card-title>
-        </mat-card-header>
-
-        <mat-card-content class="article-content">
-            <p>{{ article.content }}</p>
-
-            <div class="tags-container">
-                <mat-chip-set>
-                    @for (tag of article.tags.split(','); track tag) {
-                    @if (tag.trim()) {
-                    <mat-chip class="custom-chip">{{ tag.trim() }}</mat-chip>
-                    }
-                    }
-                </mat-chip-set>
-            </div>
-        </mat-card-content>
-
-        <mat-card-actions class="card-actions">
-            <button mat-button color="primary" [routerLink]="['/articles/edit', article.id]">
-                <mat-icon>edit</mat-icon> Editar
+    @if (articles.length === 0) {
+        <div class="empty-state">
+            <mat-icon class="empty-icon">menu_book</mat-icon>
+            <h3>Nenhum artigo encontrado</h3>
+            <p>Parece que o seu banco de dados está vazio. Comece criando um novo artigo técnico!</p>
+            <button mat-raised-button color="primary" routerLink="/articles/new">
+                <mat-icon>add</mat-icon> Criar Primeiro Artigo
             </button>
-            <button mat-button color="warn" (click)="deleteArticle(article.id!)">
-                <mat-icon>delete</mat-icon> Excluir
-            </button>
-        </mat-card-actions>
-    </mat-card>
+        </div>
+    } @else {
+        <div class="articles-grid">
+            @for (article of articles; track article.id) {
+                <mat-card class="article-card mat-elevation-z2">
+                    <mat-card-header>
+                        <mat-card-title class="article-title">{{ article.title }}</mat-card-title>
+                    </mat-card-header>
+
+                    <mat-card-content class="article-content">
+                        <p>{{ article.content }}</p>
+
+                        <div class="tags-container">
+                            <mat-chip-set>
+                                @for (tag of article.tags.split(','); track tag) {
+                                    @if (tag.trim()) {
+                                        <mat-chip class="custom-chip">{{ tag.trim() }}</mat-chip>
+                                    }
+                                }
+                            </mat-chip-set>
+                        </div>
+                    </mat-card-content>
+
+                    <mat-card-actions class="card-actions">
+                        <button mat-button color="primary" [routerLink]="['/articles/edit', article.id]">
+                            <mat-icon>edit</mat-icon> Editar
+                        </button>
+                        <button mat-button color="warn" (click)="deleteArticle(article.id!)">
+                            <mat-icon>delete</mat-icon> Excluir
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            }
+        </div>
     }
-</div>
-}
 }
 
 <!-- <div class="container">

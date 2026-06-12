@@ -1,70 +1,187 @@
-.container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
+.page-header {
+    margin-bottom: 2rem;
 
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-
-        h1 {
-            margin: 0;
-            font-weight: 500;
-        }
+    h2 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 0.2rem;
+        font-weight: 500;
     }
 
-    .filter-bar {
-        margin-bottom: 2rem;
-        .search-input {
-            width: 100%;
-        }
-    }
-
-    .articles-card {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        height: 100%;
-
-        .category-avatar {
-            background-color: #3f51b5;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .content-preview {
-            margin: 1rem 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            color: rgba(0, 0, 0, 0.7);
-        }
-
-        .tags-set {
-            margin-top: 1rem;
-        }
-
-        .empty-state {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 3rem;
-            color: #757575;
-
-            .empty-icon {
-                font-size: 48px;
-                text-align: 48px;
-                width: 48px;
-                height: 48px;
-                margin-bottom: 1rem;
-            }
-        }
+    .subtitle {
+        color: #666;
+        font-size: 0.95rem;
     }
 }
+
+// Grid Responsivo
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+// Estilização do Card
+.article-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+}
+
+.article-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #1a237e; // Azul escuro corporativo
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+
+.article-content {
+    margin-top: 1rem;
+    flex-grow: 1; // Força o conteúdo a empurrar as ações para o rodapé do card
+
+    p {
+        color: #444;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3; // Limita o texto do conteúdo a 3 linhas na listagem
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.tags-container {
+    margin-top: 1.25rem;
+}
+
+.custom-chip {
+    background-color: #e8eaf6 !important; // Tom azul suave de fundo
+    color: #283593 !important; // Texto azul contrastante
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #f0f0f0;
+    padding: 0.5rem 1rem !important;
+    background-color: #fafafa;
+}
+
+// Telas de aviso (vazio ou carregando)
+.loading-box,
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #fdfdfd;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.empty-state {
+    .empty-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        color: #9e9e9e;
+        margin-bottom: 1rem;
+    }
+
+    h3 {
+        color: #424242;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        color: #757575;
+        margin-bottom: 1.5rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
+// .container {
+//     padding: 2rem;
+//     max-width: 1200px;
+//     margin: 0 auto;
+
+//     .page-header {
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//         margin-bottom: 2rem;
+
+//         h1 {
+//             margin: 0;
+//             font-weight: 500;
+//         }
+//     }
+
+//     .filter-bar {
+//         margin-bottom: 2rem;
+//         .search-input {
+//             width: 100%;
+//         }
+//     }
+
+//     .articles-card {
+//         display: flex;
+//         flex-direction: column;
+//         justify-content: space-between;
+//         height: 100%;
+
+//         .category-avatar {
+//             background-color: #3f51b5;
+//             color: white;
+//             display: flex;
+//             align-items: center;
+//             justify-content: center;
+//             border-radius: 50%;
+//             font-weight: bold;
+//             font-size: 0.9rem;
+//         }
+
+//         .content-preview {
+//             margin: 1rem 0;
+//             display: -webkit-box;
+//             -webkit-line-clamp: 3;
+//             -webkit-box-orient: vertical;
+//             overflow: hidden;
+//             color: rgba(0, 0, 0, 0.7);
+//         }
+
+//         .tags-set {
+//             margin-top: 1rem;
+//         }
+
+//         .empty-state {
+//             grid-column: 1 / -1;
+//             text-align: center;
+//             padding: 3rem;
+//             color: #757575;
+
+//             .empty-icon {
+//                 font-size: 48px;
+//                 text-align: 48px;
+//                 width: 48px;
+//                 height: 48px;
+//                 margin-bottom: 1rem;
+//             }
+//         }
+//     }
+// }

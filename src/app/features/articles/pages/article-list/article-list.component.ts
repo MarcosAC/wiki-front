@@ -9,6 +9,13 @@ import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { ArticleService } from "../../../../core/services/article.service";
 
+interface Article {
+    id?: number;
+    title: string;
+    content: string;
+    tags: string;
+}
+
 @Component({
     selector: 'app-article-list',
     standalone: true,
@@ -28,18 +35,37 @@ import { ArticleService } from "../../../../core/services/article.service";
 })
 
 export class ArticleListComponent implements OnInit {
-    private articleService = inject(ArticleService);
+    //private articleService = inject(ArticleService);
 
-    public articles = this.articleService.articles;
+    //public articles = this.articleService.articles;
     public searchFilter = signal<string>('');
+
+    articles: Article[] = [];
+    loading = true;
+
+    constructor(private articleService: ArticleService) {}
 
     ngOnInit(): void {
         this.loadArticles();
     }
 
     public loadArticles(): void {
-        this.articleService.getAll(this.searchFilter()).subscribe({
-            error: (err) => console.error('Erro ao buscar artigos da API:', err)
+        // this.articleService.getAll(this.searchFilter()).subscribe({
+        //     error: (err) => console.error('Erro ao buscar artigos da API:', err)
+        // });
+
+        this.loading = true;
+
+        this.articleService.getAll().subscribe({
+            next: (data) => {
+                this.articles = data;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Erro ao buscar artigos da API:', err);
+                this.loading = false;
+            }
+
         });
     }
 
@@ -52,6 +78,10 @@ export class ArticleListComponent implements OnInit {
     public deleteArticle(id: number): void {
         if (confirm('Deseja realmente excluir este artigo?')) {
             this.articleService.delete(id).subscribe({
+                next: () => {
+                    this.articles.filter(article => article.id !== id);
+                },
+                
                 error: (err) => console.error('Erro ao deletar artigo:', err)
             })
         }

@@ -1,0 +1,47 @@
+.page-header {
+  margin-bottom: 2rem;
+  
+  h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+    font-weight: 500;
+  }
+  
+  .subtitle {
+    color: #666;
+    font-size: 0.95rem;
+  }
+}
+
+.form-card {
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.article-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 1.5rem;
+}
+
+.loading-box {
+  text-align: center;
+  padding: 4rem;
+  color: #666;
+}

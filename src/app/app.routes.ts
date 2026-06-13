@@ -13,13 +13,13 @@ export const routes: Routes = [
     },
     {
         path: 'articles/new',        
-        loadComponent: () => import('./features/articles/pages/article-form/article-form')
-            .then(m => m.ArticleForm)
+        loadComponent: () => import('./features/articles/pages/article-form/article-form.component')
+            .then(m => m.ArticleFormComponent)
     },
     {
         path: 'articles/edit/:id',        
-        loadComponent: () => import('./features/articles/pages/article-form/article-form')
-            .then(m => m.ArticleForm)
+        loadComponent: () => import('./features/articles/pages/article-form/article-form.component')
+            .then(m => m.ArticleFormComponent)
     },
     {
         path: '**',

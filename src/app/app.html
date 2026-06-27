@@ -1,9 +1,19 @@
 <mat-toolbar color="primary" class="main-header mat-elevation-z4">
   <span routerLink="/" style="cursor: pointer;">📚 Wiki de Artigos</span>
   <span class="spacer"></span>
-  <button mat-flat-button color="accent" routerLink="/articles/new">
-    <mat-icon>add</mat-icon> Novo Artigo
-  </button>
+  @if (authService.isAuthenticated()) {
+    <button mat-flat-button color="accent" routerLink="/articles/new">
+      <mat-icon>add</mat-icon> Novo Artigo
+    </button>
+    
+    <button mat-flat-button color="warn" (click)="Logout()">
+      <mat-icon>logout</mat-icon> Sair
+    </button>
+  } @else {
+    <button mat-flat-button color="accent" routerLink="/login">
+      <mat-icon>login</mat-icon> Entrar
+    </button>
+  } 
 </mat-toolbar>
 
 <main class="app-container">

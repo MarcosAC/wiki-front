@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -33,26 +33,27 @@ export class LoginComponent {
         password: ['', Validators.required]
     });
 
-    public errorMessage = '';
+    public errorMessage = signal<string>('');
 
     public onSubmit(): void {
         if (this.loginForm.invalid) return;
 
-        this.errorMessage = '';
+        this.errorMessage.set('');
         const { username, password } = this.loginForm.value;
         
-        const sucess = this.authService.login(username!, password!).subscribe({
+        this.authService.login(username!, password!).subscribe({
             next: (response) => {
                 this.router.navigate(['/articles']);
             },
+
             error: (err) => {
                 console.error('Erro ao tentar realizar login:.', err);
 
                 if (err.status === 401 || err.status === 400) { 
-                    this.errorMessage = 'Usuário ou senha inválidos.';
+                    this.errorMessage.set('Usuário ou senha inválidos.');
                 }
                 else {
-                    this.errorMessage = 'Falha na comunicação com o servidor de autenticação.';
+                    this.errorMessage.set('Falha na comunicação com o servidor de autenticação.');
                 }
             }
         });

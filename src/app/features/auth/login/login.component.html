@@ -17,8 +17,8 @@
           <input matInput type="password" formControlName="password" placeholder="Digite sua senha">
         </mat-form-field>
 
-        @if (errorMessage) {
-          <p class="error-text">{{ errorMessage }}</p>
+        @if (errorMessage()) {
+          <p class="error-text">{{ errorMessage() }}</p>
         }
 
         <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">

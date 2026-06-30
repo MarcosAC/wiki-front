@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -29,7 +29,8 @@ export class ArticleFormComponent implements OnInit {
   articleForm!: FormGroup;
   isEditMode = false;
   articleId?: number;
-  loading = false;
+  
+  public isLoading = signal<boolean>(false);
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +42,6 @@ export class ArticleFormComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
 
-    // Verifica se há um parâmetro 'id' na rota para ativar o modo de edição
     this.articleId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.articleId) {
       this.isEditMode = true;
@@ -58,15 +58,15 @@ export class ArticleFormComponent implements OnInit {
   }
 
   private loadArticleForEdit(): void {
-    this.loading = true;
+    this.isLoading.set(true);
     this.articleService.getArticleById(this.articleId!).subscribe({
       next: (article) => {
         this.articleForm.patchValue(article);
-        this.loading = false;
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Erro ao buscar artigo para edição:', err);
-        this.loading = false;
+        this.isLoading.set(false);
         this.router.navigate(['/articles']);
       }
     });
@@ -75,25 +75,27 @@ export class ArticleFormComponent implements OnInit {
   onSubmit(): void {
     if (this.articleForm.invalid) return;
 
-    this.loading = true;
-    const articleData = this.articleForm.value;
+    this.isLoading.set(true);
 
-    if (this.isEditMode) {
-      // Atualiza artigo existente
+    const articleData = {
+      ...this.articleForm.value,
+      id: this.articleId
+    }
+
+    if (this.isEditMode) {      
       this.articleService.updateArticle(this.articleId!, articleData).subscribe({
         next: () => this.router.navigate(['/articles']),
         error: (err) => {
           console.error('Erro ao atualizar artigo:', err);
-          this.loading = false;
+          this.isLoading.set(false);
         }
       });
     } else {
-      // Cria um novo artigo
       this.articleService.createArticle(articleData).subscribe({
         next: () => this.router.navigate(['/articles']),
         error: (err) => {
           console.error('Erro ao criar artigo:', err);
-          this.loading = false;
+          this.isLoading.set(false);
         }
       });
     }

@@ -35,37 +35,29 @@ interface Article {
 })
 
 export class ArticleListComponent implements OnInit {
-    //private articleService = inject(ArticleService);
+    private articleService = inject(ArticleService);
 
-    //public articles = this.articleService.articles;
+    public articles = signal<Article[]>([]);
+    public isLoading = signal<boolean>(true);
+
     public searchFilter = signal<string>('');
-
-    articles: Article[] = [];
-    loading = true;
-
-    constructor(private articleService: ArticleService) {}
 
     ngOnInit(): void {
         this.loadArticles();
     }
 
     public loadArticles(): void {
-        // this.articleService.getAll(this.searchFilter()).subscribe({
-        //     error: (err) => console.error('Erro ao buscar artigos da API:', err)
-        // });
-
-        this.loading = true;
+        this.isLoading.set(true);
 
         this.articleService.getAll().subscribe({
             next: (data) => {
-                this.articles = data;
-                this.loading = false;
+                this.articles.set(data);
+                this.isLoading.set(false);
             },
             error: (err) => {
-                console.error('Erro ao buscar artigos da API:', err);
-                this.loading = false;
+                console.error('Erro ao buscar artigos', err);
+                this.isLoading.set(false);
             }
-
         });
     }
 
@@ -79,11 +71,12 @@ export class ArticleListComponent implements OnInit {
         if (confirm('Deseja realmente excluir este artigo?')) {
             this.articleService.delete(id).subscribe({
                 next: () => {
-                    this.articles.filter(article => article.id !== id);
+                    this.articles.update(currentArticles =>
+                        currentArticles.filter(article => article.id !== id)
+                    );
                 },
-                
                 error: (err) => console.error('Erro ao deletar artigo:', err)
-            })
+            });
         }
     }
 }

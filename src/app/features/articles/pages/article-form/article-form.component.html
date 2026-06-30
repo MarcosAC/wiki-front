@@ -6,7 +6,7 @@
     </p>
 </div>
 
-@if (loading && isEditMode) {
+@if (isLoading() && isEditMode) {
     <div class="loading-box">
         <p>Carregando dados do artigo...</p>
     </div>
@@ -49,10 +49,10 @@
                 </mat-form-field>
 
                 <div class="form-actions">
-                    <button mat-button type="button" routerLink="/articles" [disabled]="loading">
+                    <button mat-button type="button" routerLink="/articles" [disabled]="isLoading()">
                         Cancelar
                     </button>
-                    <button mat-raised-button color="primary" type="submit" [disabled]="articleForm.invalid || loading">
+                    <button mat-raised-button color="primary" type="submit" [disabled]="articleForm.invalid || isLoading()">
                         <mat-icon>{{ isEditMode ? 'save' : 'check' }}</mat-icon>
                         {{ isEditMode ? 'Salvar Alterações' : 'Publicar Artigo' }}
                     </button>

@@ -7,6 +7,8 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { Router } from "@angular/router";
+import { AuthService } from "../../../../core/services/auth.service";
 import { ArticleService } from "../../../../core/services/article.service";
 
 interface Article {
@@ -35,37 +37,31 @@ interface Article {
 })
 
 export class ArticleListComponent implements OnInit {
-    //private articleService = inject(ArticleService);
+    private articleService = inject(ArticleService);
+    private authService = inject(AuthService);
+    private router = inject(Router);
 
-    //public articles = this.articleService.articles;
+    public articles = signal<Article[]>([]);
+    public isLoading = signal<boolean>(true);
+
     public searchFilter = signal<string>('');
-
-    articles: Article[] = [];
-    loading = true;
-
-    constructor(private articleService: ArticleService) {}
 
     ngOnInit(): void {
         this.loadArticles();
     }
 
     public loadArticles(): void {
-        // this.articleService.getAll(this.searchFilter()).subscribe({
-        //     error: (err) => console.error('Erro ao buscar artigos da API:', err)
-        // });
-
-        this.loading = true;
+        this.isLoading.set(true);
 
         this.articleService.getAll().subscribe({
             next: (data) => {
-                this.articles = data;
-                this.loading = false;
+                this.articles.set(data);
+                this.isLoading.set(false);
             },
             error: (err) => {
-                console.error('Erro ao buscar artigos da API:', err);
-                this.loading = false;
+                console.error('Erro ao buscar artigos', err);
+                this.isLoading.set(false);
             }
-
         });
     }
 
@@ -75,15 +71,32 @@ export class ArticleListComponent implements OnInit {
         this.loadArticles();
     }
 
+    public editArticle(id: number): void {
+        if (!this.authService.isAuthenticated()) {
+            alert('Você precisa estar logado para editar um artigo técnico.');
+            this.router.navigate(['/login']);
+            return;
+        }
+
+        this.router.navigate(['/articles/edit', id]);
+    }
+
     public deleteArticle(id: number): void {
-        if (confirm('Deseja realmente excluir este artigo?')) {
+        if (!this.authService.isAuthenticated()) {
+            alert('Você precisa estar logado para excluir um artigo técnico.');
+            this.router.navigate(['/login']);
+            return;
+        }
+
+        if (confirm('Tem certeza que deseja excluir este artigo?')) {
             this.articleService.delete(id).subscribe({
                 next: () => {
-                    this.articles.filter(article => article.id !== id);
+                    this.articles.update(currentArticles =>
+                        currentArticles.filter(article => article.id !== id)
+                    );
                 },
-                
                 error: (err) => console.error('Erro ao deletar artigo:', err)
-            })
+            });
         }
     }
 }

@@ -60,14 +60,19 @@ export class ArticleService {
     );
   }
 
-  /**
+    /**
    * Atualiza um artigo existente e atualiza sua referência no Signal de estado
    */
   public updateArticle(id: number, article: Partial<ArticleResponse>): Observable<ArticleResponse> {
     return this.http.put<ArticleResponse>(`${this.apiUrl}/${id}`, article).pipe(
       tap(updatedArticle => {
         this.#articleState.update(list => 
-          list.map(a => a.id === id ? { ...a, ...updatedArticle } : a)
+          list.map(a => {
+            if (a.id === id) {             
+              return { ...a, ...updatedArticle, ...article };
+            }
+            return a;
+          })
         );
       })
     );

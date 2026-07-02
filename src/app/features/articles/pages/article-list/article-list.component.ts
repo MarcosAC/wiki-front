@@ -7,6 +7,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { Router } from "@angular/router";
 import { AuthService } from "../../../../core/services/auth.service";
 import { ArticleService } from "../../../../core/services/article.service";
@@ -30,7 +31,8 @@ interface Article {
         MatIconModule,
         MatChipsModule,
         MatInputModule,
-        MatFormFieldModule
+        MatFormFieldModule,
+        MatSnackBarModule
     ],
     templateUrl: './article-list.component.html',
     styleUrl: './article-list.component.scss',
@@ -40,10 +42,10 @@ export class ArticleListComponent implements OnInit {
     private articleService = inject(ArticleService);
     private authService = inject(AuthService);
     private router = inject(Router);
+    private snackBar = inject(MatSnackBar);
 
     public articles = signal<Article[]>([]);
     public isLoading = signal<boolean>(true);
-
     public searchFilter = signal<string>('');
 
     ngOnInit(): void {
@@ -73,7 +75,10 @@ export class ArticleListComponent implements OnInit {
 
     public editArticle(id: number): void {
         if (!this.authService.isAuthenticated()) {
-            alert('Você precisa estar logado para editar um artigo técnico.');
+            this.snackBar.open('Você precisa estar logado para editar um artigo técnico.', 'Fechar', {
+                duration: 3000,
+                panelClass: ['error-snack']
+            });
             this.router.navigate(['/login']);
             return;
         }
@@ -83,7 +88,10 @@ export class ArticleListComponent implements OnInit {
 
     public deleteArticle(id: number): void {
         if (!this.authService.isAuthenticated()) {
-            alert('Você precisa estar logado para excluir um artigo técnico.');
+            this.snackBar.open('Você precisa estar logado para excluir um artigo técnico.', 'Fechar', {
+                duration: 3000,
+                panelClass: ['error-snack']
+            });
             this.router.navigate(['/login']);
             return;
         }
@@ -94,8 +102,18 @@ export class ArticleListComponent implements OnInit {
                     this.articles.update(currentArticles =>
                         currentArticles.filter(article => article.id !== id)
                     );
+                    this.snackBar.open('Artigo excluído com sucesso!', 'Fechar', {
+                        duration: 3000,
+                        panelClass: ['success-snack']
+                    });
                 },
-                error: (err) => console.error('Erro ao deletar artigo:', err)
+                error: (err) => {
+                    console.error('Erro ao deletar artigo:', err);
+                    this.snackBar.open('Erro ao excluir o artigo.', 'Fechar', {
+                        duration: 3000,
+                        panelClass: ['error-snack']
+                    });
+                }
             });
         }
     }

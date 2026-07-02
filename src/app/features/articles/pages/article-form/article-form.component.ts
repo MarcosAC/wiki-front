@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ArticleService } from '../../../../core/services/article.service';
 
 @Component({
@@ -20,7 +21,8 @@ import { ArticleService } from '../../../../core/services/article.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './article-form.component.html',
   styleUrl: './article-form.component.scss'
@@ -36,7 +38,8 @@ export class ArticleFormComponent implements OnInit {
     private fb: FormBuilder,
     private articleService: ArticleService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -67,6 +70,7 @@ export class ArticleFormComponent implements OnInit {
       error: (err) => {
         console.error('Erro ao buscar artigo para edição:', err);
         this.isLoading.set(false);
+        this.showSnackBar('Erro ao carregar o artigo para edição.', 'Fechar', 3000, ['error-snack']);
         this.router.navigate(['/articles']);
       }
     });
@@ -84,20 +88,37 @@ export class ArticleFormComponent implements OnInit {
 
     if (this.isEditMode) {      
       this.articleService.updateArticle(this.articleId!, articleData).subscribe({
-        next: () => this.router.navigate(['/articles']),
+        next: () => {
+          this.router.navigate(['/articles']);
+          this.showSnackBar('Artigo atualizado com sucesso!', 'Fechar', 3000, ['success-snack']); },
         error: (err) => {
           console.error('Erro ao atualizar artigo:', err);
           this.isLoading.set(false);
+          this.showSnackBar('Erro ao atualizar o artigo.', 'Fechar', 3000, ['error-snack']);
         }
       });
     } else {
       this.articleService.createArticle(articleData).subscribe({
-        next: () => this.router.navigate(['/articles']),
+        next: () => {
+          this.showSnackBar('Novo artigo publicado com sucesso na Wiki!', 'Fechar', 3000, ['success-snack']);
+          this.router.navigate(['/articles']);          
+        },
         error: (err) => {
           console.error('Erro ao criar artigo:', err);
           this.isLoading.set(false);
+          this.showSnackBar('Erro ao criar o artigo.', 'Fechar', 3000, ['error-snack']);
         }
       });
     }
+  }
+
+  private showSnackBar(message: string, action: string, duration: number, panelClass: string[]): void {
+    this.snackBar.open(message, action, 
+      { 
+        duration: 4000,
+        horizontalPosition: 'end',
+        verticalPosition: 'bottom',
+        panelClass: panelClass 
+      });
   }
 }

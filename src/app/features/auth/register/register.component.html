@@ -1,0 +1,51 @@
+<div class="register-container">
+    <mat-card class="register-card">
+        <mat-card-header>
+            <mat-card-title>Criar Nova Conta</mat-card-title>
+            <mat-card-subtitle>Entre para a nossa Wiki Técnica</mat-card-subtitle>
+        </mat-card-header>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <mat-card-content>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Nome</mat-label>
+                    <input matInput formControlName="username" placeholder="Ex: João Silva">
+                    <mat-icon matSuffix>person</mat-icon>
+                    @if (registerForm.get('username')?.hasError('required')) {
+                    <mat-error>O nome é obrigatório</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Senha</mat-label>
+                    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password">
+                    <button type="button" mat-icon-button matSuffix (click)="hidePassword.set(!hidePassword())">
+                        <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    <mat-error>Mínimo de 6 caracteres</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Confirmar Senha</mat-label>
+                    <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword">
+                    @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
+                    <mat-error>As senhas não coincidem</mat-error>
+                    }
+                </mat-form-field>
+
+            </mat-card-content>
+
+            <mat-card-actions>
+                <button mat-flat-button color="primary" class="full-width"
+                    [disabled]="registerForm.invalid || isLoading()">
+                    {{ isLoading() ? 'Criando conta...' : 'Cadastrar' }}
+                </button>
+            </mat-card-actions>
+
+            <div class="login-link">
+                Já tem uma conta? <a routerLink="/login">Faça login aqui</a>
+            </div>
+        </form>
+    </mat-card>
+</div>

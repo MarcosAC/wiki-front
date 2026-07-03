@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router'; // 👈 IMPORTADO O ROUTERLINK
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,52 +11,49 @@ import { AuthService } from '../../../core/services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule
-    ],
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule
+  ],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss'
 })
-
 export class LoginComponent {
-    private authService = inject(AuthService);
-    private router = inject(Router);
-    private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
 
-    public loginForm = this.fb.group({
-        username: ['', Validators.required],
-        password: ['', Validators.required]
+  public loginForm = this.fb.group({
+    username: ['', Validators.required],
+    password: ['', Validators.required]
+  });
+
+  public errorMessage = signal<string>('');
+
+  public onSubmit(): void {
+    if (this.loginForm.invalid) return;
+
+    this.errorMessage.set('');
+    const { username, password } = this.loginForm.value;
+    
+    this.authService.login(username!, password!).subscribe({
+      next: () => {
+        this.router.navigate(['/articles']);
+      },
+      error: (err) => {
+        console.error('Erro ao tentar realizar login:', err);
+
+        if (err.status === 401 || err.status === 400) { 
+          this.errorMessage.set('Usuário ou senha inválidos.');
+        } else {
+          this.errorMessage.set('Falha na comunicação com o servidor de autenticação.');
+        }
+      }
     });
-
-    public errorMessage = signal<string>('');
-
-    public onSubmit(): void {
-        if (this.loginForm.invalid) return;
-
-        this.errorMessage.set('');
-        const { username, password } = this.loginForm.value;
-        
-        this.authService.login(username!, password!).subscribe({
-            next: (response) => {
-                this.router.navigate(['/articles']);
-            },
-
-            error: (err) => {
-                console.error('Erro ao tentar realizar login:.', err);
-
-                if (err.status === 401 || err.status === 400) { 
-                    this.errorMessage.set('Usuário ou senha inválidos.');
-                }
-                else {
-                    this.errorMessage.set('Falha na comunicação com o servidor de autenticação.');
-                }
-            }
-        });
-    }
+  }
 }
-            
